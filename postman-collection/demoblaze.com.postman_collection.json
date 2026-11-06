@@ -1,0 +1,387 @@
+{
+  "info": {
+    "_postman_id": "9f2e45a3-2f06-4d5f-8133-70bf992e6ea2",
+    "name": "demoblaze.com",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "54103441",
+    "_collection_link": "https://go.postman.co/collection/54103441-9f2e45a3-2f06-4d5f-8133-70bf992e6ea2?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "TC-001_Registration_NewUser",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"No error message in response (User created)\", function () {\r\n    pm.expect(pm.response.text()).to.not.include(\"errorMessage\");\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"username\": \"{{valid_user}}\",\r\n  \"password\": \"{{valid_pass}}\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{sourceUrl}}/signup",
+          "host": [
+            "{{sourceUrl}}"
+          ],
+          "path": [
+            "signup"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC-002_Registration_ExistingUser",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    pm.expect(pm.response.text()).to.include(\"This user already exist.\");\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"username\": \"{{valid_user}}\",\r\n  \"password\": \"{{valid_pass}}\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{sourceUrl}}/signup",
+          "host": [
+            "{{sourceUrl}}"
+          ],
+          "path": [
+            "signup"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC-003_EmptyBody",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server returns an error status\", function () {\r\n    pm.expect(pm.response.code).to.be.oneOf([400, 415, 422, 500]);\r\n});\r\n\r\npm.test(\"Server returns an error status\", function () {\r\n    pm.expect(pm.response.code).to.be.oneOf([400, 415, 422, 500]);\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{sourceUrl}}/signup",
+          "host": [
+            "{{sourceUrl}}"
+          ],
+          "path": [
+            "signup"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC-004_Login_ValidData",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});\n\npm.test(\"Auth_token is present and saved\", function () {\n    var responseText = pm.response.text();\n    \n    pm.expect(responseText).to.contain(\"Auth_token:\");\n    \n    var rawToken = responseText.split(\": \")[1];\n    \n    var cleanToken = rawToken.replace(/\"/g, \"\").trim();\n    \n    pm.environment.set(\"auth_token\", cleanToken);\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"username\": \"{{valid_user}}\",\r\n  \"password\": \"{{valid_pass}}\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{sourceUrl}}/login",
+          "host": [
+            "{{sourceUrl}}"
+          ],
+          "path": [
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC-005_Login_InvalidPassword",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});\n\npm.test(\"Response contains an error message\", function () {\n    var responseText = pm.response.text().toLowerCase();\n    \n    pm.expect(responseText).to.match(/wrong|error/);\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"username\": \"{{valid_user}}\",\r\n  \"password\": \"WrongPass123\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{sourceUrl}}/login",
+          "host": [
+            "{{sourceUrl}}"
+          ],
+          "path": [
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC-006_Login_EmptyBody",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server returns an error status\", function () {\n    pm.expect(pm.response.code).to.be.oneOf([400, 415, 500]);\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{sourceUrl}}/login",
+          "host": [
+            "{{sourceUrl}}"
+          ],
+          "path": [
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC-007_AddToCart",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});\n\npm.test(\"Response body is empty or success\", function () {\n    pm.expect(pm.response.text()).to.be.oneOf([\"\", '\"\"']);\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"id\": 1,\r\n  \"cookie\": \"{{auth_token}}\",\r\n  \"prod_id\": 1,\r\n  \"flag\": true\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{sourceUrl}}/addtocart",
+          "host": [
+            "{{sourceUrl}}"
+          ],
+          "path": [
+            "addtocart"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC-008_ViewCart",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});\n\npm.test(\"Cart contains items\", function () {\n    var jsonData = pm.response.json();\n    \n    pm.expect(jsonData).to.have.property(\"Items\");\n    pm.expect(jsonData.Items).to.be.an(\"array\");\n    pm.expect(jsonData.Items.length).to.be.above(0);\n\n    var hasItem = jsonData.Items.some(function(item) {\n        return item.prod_id === 1 || item.id === 1;\n    });\n    pm.expect(hasItem).to.be.true;\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"cookie\": \"{{auth_token}}\",\r\n  \"flag\": true\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{sourceUrl}}/viewcart",
+          "host": [
+            "{{sourceUrl}}"
+          ],
+          "path": [
+            "viewcart"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC-009_Login_GetMethod",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server returns 405 Bad Request\", function () {\n    pm.response.to.have.status(405);\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{sourceUrl}}/login",
+          "host": [
+            "{{sourceUrl}}"
+          ],
+          "path": [
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC-010_NonExistentEndpoint",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server returns 404 Not Found\", function () {\n    // Ожидаем ошибку 404\n    pm.response.to.have.status(404);\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{sourceUrl}}/nonexistent-page",
+          "host": [
+            "{{sourceUrl}}"
+          ],
+          "path": [
+            "nonexistent-page"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "sourceUrl",
+      "value": ""
+    }
+  ]
+}
